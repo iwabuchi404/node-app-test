@@ -1,5 +1,8 @@
-var http = require('http');
-var server = http.createServer(function(req, res) {
-  res.write("Hello world!\n");
-  res.end();
-}).listen(8080);
+const http = require('http');
+const server = http.createServer((req, res) => {
+ res.statusCode = 200;
+ res.setHeader('Content-Type', 'text/plain');
+ res.end('Hello World\n');
+}).listen(process.env.PORT || 3000, () => {
+ console.log(`Server running.`);
+});
