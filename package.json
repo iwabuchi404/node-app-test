@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/iwabuchi404/node-app-test/issues"
   },
-  "homepage": "https://github.com/iwabuchi404/node-app-test#readme"
+  "homepage": "https://github.com/iwabuchi404/node-app-test#readme",
+  "dependencies": {
+    "socket.io": "^2.1.1"
+  }
 }

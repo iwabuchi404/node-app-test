@@ -4,8 +4,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>tset app</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css"></link>
+
 </head>
 <body>
-    
+    <main id="container">
+        <h1>test</h1>
+        <div>
+            <ul class="message-area">
+                <li v-for="(message, index) in message_list">{{ message }}</li>
+            </ul>
+            <ul class="system-area">
+                <li v-for="(system_message, index) in system_messages">{{ system_message }}</li>
+            </ul>
+        </div>
+        <div>
+            <input type="text" v-model="name" >
+            <span> : </span>
+            <input type="text" v-model="message" >
+            <button v-on:click="sendMassage(name, message)">send</button>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <script src="https://unpkg.com/vue-fullpage.js/dist/vue-fullpage.min.js"></script>
+    <script>
+        let main_vm = new Vue({
+          el: '#container',
+          data: {
+            socket: "",
+            message_list:[],
+            users: [],
+            system_messages: [],
+            message: "",
+            name: "nanasi",
+          },
+          created: function(){
+
+          },
+          mounted: function(){
+            this.chat_init()
+          },
+          methods: {
+            chat_init: function(){
+                let self = this
+                self.connect()
+                self.socket.on("send_message", function(msg){
+                    console.log(msg)
+                    self.message_list.unshift(msg.name+" : "+msg.message)
+                })
+                self.socket.on("sys_message_send", function(msg){
+                    self.system_messages.unshift(msg.message)
+                })
+            },
+            connect: function(){
+                let self = this
+                // self.socket = io.connect("http://localhost:8000")ローカル
+                self.socket = io.connect()
+                self.socket.on("connect", function (val) {
+                    self.system_messages.unshift("connect "+val)
+                });
+            },
+            sendMassage: function(name, msg) {
+                console.log(msg)
+                if(msg){
+                    this.socket.emit("send_message", { name: name, message : msg })
+                    this.message_list.unshift("you : "+msg)
+                    this.message = ""
+                }
+            },
+            clickBtn: function(item){
+              console.log(item)
+              document.querySelector('.title').classList.add('is-hidden');
+            }
+          }
+        })
+    </script>
 </body>
 </html>
